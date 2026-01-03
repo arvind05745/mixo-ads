@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useMemo } from "react";
 import Link from "next/link";
-import { ArrowLeft } from "lucide-react";
+import { Search, ArrowLeft } from "lucide-react";
 import { AllCampaings, GetInsights } from "../api";
 
 
@@ -179,11 +179,11 @@ const Campaigns = () => {
     <div className="min-h-screen bg-gray-50">
       <div className="max-w-7xl mx-auto px-4 py-8">
         <Link
-        href="/"
-        className="inline-flex items-center gap-2 rounded-xl mb-4 bg-gradient-to-r from-indigo-600 to-violet-600 px-5 py-2.5 text-sm font-semibold text-white shadow-lg transition hover:-translate-y-0.5"
-      >
-         <ArrowLeft/>Dashboard
-      </Link>
+          href="/"
+          className="inline-flex items-center gap-2 rounded-xl mb-4 bg-gradient-to-r from-indigo-600 to-violet-600 px-5 py-2.5 text-sm font-semibold text-white shadow-lg transition hover:-translate-y-0.5"
+        >
+          <ArrowLeft /> Dashboard
+        </Link>
         {insights && (
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
             <InsightCard title="Total Campaigns" value={insights.total_campaigns} />
@@ -199,7 +199,54 @@ const Campaigns = () => {
             <InsightCard title="Conversion Rate (%)" value={insights.avg_conversion_rate} />
           </div>
         )}
+        <div className="bg-white rounded-lg shadow-sm p-6 mb-6">
+          <div className="flex flex-col lg:flex-row gap-4">
+            <div className="relative flex-1">
+              <Search className="absolute left-3 top-3 text-gray-400 h-5 w-5" />
+              <input
+                className="w-full pl-10 pr-4 py-2.5 border rounded-lg"
+                placeholder="Search campaigns..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+              />
+            </div>
 
+            <select
+              className="border rounded-lg px-4 py-2.5"
+              value={statusFilter}
+              onChange={(e) => setStatusFilter(e.target.value)}
+            >
+              <option value="all">All Status</option>
+              <option value="active">Active</option>
+              <option value="paused">Paused</option>
+              <option value="completed">Completed</option>
+            </select>
+
+            <select
+              className="border rounded-lg px-4 py-2.5"
+              value={platformFilter}
+              onChange={(e) => setPlatformFilter(e.target.value)}
+            >
+              <option value="all">All Platforms</option>
+              {uniquePlatforms.map((p) => (
+                <option key={p} value={p}>
+                  {platformConfig[p]?.label || p}
+                </option>
+              ))}
+            </select>
+
+            <select
+              className="border rounded-lg px-4 py-2.5"
+              value={sortBy}
+              onChange={(e) => setSortBy(e.target.value)}
+            >
+              <option value="newest">Newest</option>
+              <option value="oldest">Oldest</option>
+              <option value="budget-high">Budget High</option>
+              <option value="budget-low">Budget Low</option>
+            </select>
+          </div>
+        </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredAndSortedCampaigns.map((campaign) => (
             <Link key={campaign.id} href={`/campaigns/${campaign.id}`}>
