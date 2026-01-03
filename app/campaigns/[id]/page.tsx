@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import Link from "next/link";
-import { RefreshCcw } from "lucide-react";
+import { ArrowLeft, RefreshCcw } from "lucide-react";
 import { SingleCampaings, GetSingleInsights } from "../../api";
 
 
@@ -158,20 +158,18 @@ const SingleCampaign = () => {
       {sseError && (
         <div className="fixed top-6 right-6 z-50">
           <div className="bg-red-100 text-red-700 border border-red-300 px-4 py-3 rounded-lg shadow-lg">
-            ⚠ Live updates disconnected
+           Live updates disconnected
           </div>
         </div>
       )}
 
-      <Link
+      <div className="max-w-5xl mx-auto space-y-8 mt-6">
+        <Link
         href="/campaigns"
         className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-indigo-600 to-violet-600 px-5 py-2.5 text-sm font-semibold text-white shadow-lg transition hover:-translate-y-0.5"
       >
-        All Campaigns
+        <ArrowLeft /> All Campaigns
       </Link>
-
-      <div className="max-w-5xl mx-auto space-y-8 mt-6">
-        {/* HEADER */}
         <div className="bg-white border rounded-xl p-8 shadow-sm">
           <div className="flex justify-between items-start mb-4">
             <div>
@@ -215,7 +213,6 @@ const SingleCampaign = () => {
           </div>
         </div>
 
-        {/* INSIGHTS */}
         {insights && (
           <div className="bg-white border rounded-xl p-8 shadow-sm">
             <div className="flex items-center gap-2 mb-6">

@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useMemo } from "react";
 import Link from "next/link";
-import { Search } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 import { AllCampaings, GetInsights } from "../api";
 
 
@@ -178,6 +178,12 @@ const Campaigns = () => {
   return (
     <div className="min-h-screen bg-gray-50">
       <div className="max-w-7xl mx-auto px-4 py-8">
+        <Link
+        href="/"
+        className="inline-flex items-center gap-2 rounded-xl mb-4 bg-gradient-to-r from-indigo-600 to-violet-600 px-5 py-2.5 text-sm font-semibold text-white shadow-lg transition hover:-translate-y-0.5"
+      >
+         <ArrowLeft/>Dashboard
+      </Link>
         {insights && (
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
             <InsightCard title="Total Campaigns" value={insights.total_campaigns} />
