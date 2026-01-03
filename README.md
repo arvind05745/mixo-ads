@@ -1,36 +1,83 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+## MIXO Ads Dashboard
+
+MIXO Ads is a lightweight analytics dashboard built with the Next.js App Router. It fetches campaign metadata plus aggregated and per-campaign insight metrics from an external MIXO Ads API and renders them with live updates via SSE. The UI is intentionally minimal so teams can drop the dashboard into any internal tooling stack without pulling in a full design system.
+
+## Features
+
+- Campaign directory with searching, platform/status filtering, and multiple sort modes.
+- System-wide insight tiles showing totals, CTR/CPC averages, and conversion performance.
+- Campaign detail pages with live metrics streamed from `/campaigns/:id/insights/stream`.
+- Loading, error, and reconnection states tuned for dashboards that are left open for hours.
+- Platform-aware tags with custom colors so meta/google/etc. are instantly recognizable.
+
+## Tech Stack
+
+- [Next.js 16 App Router](https://nextjs.org/docs) with React 19.
+- TypeScript for type-safety on campaign/insight models.
+- Tailwind CSS v4 (via the `@tailwindcss/postcss` preset) for utility-first styling.
+- Axios for API bindings and the native `EventSource` API for SSE streaming.
+- Lucide icons for search/refresh affordances.
+
+## Project Structure
+
+```
+app/
+ ├─ api.js                 # Axios-based REST helper functions
+ ├─ campaigns/page.tsx     # Campaign catalogue with filters + insight tiles
+ ├─ campaigns/[id]/page.tsx# Detailed view with live insight streaming
+ ├─ layout.tsx             # Root layout
+ └─ globals.css            # Tailwind base styles
+public/
+ └─ ...                    # Static assets
+```
 
 ## Getting Started
 
-First, run the development server:
+### 1. Install dependencies
+
+```bash
+npm install
+```
+
+### 2. Configure environment
+
+Create a `.env.local` (or `.env`) file in the project root:
+
+```
+NEXT_PUBLIC_SITE_NAME=https://your-mixo-api-host
+```
+
+This host must expose the REST endpoints used in `app/api.js`:
+
+- `GET /campaigns`
+- `GET /campaigns/:id`
+- `GET /campaigns/insights`
+- `GET /campaigns/:id/insights`
+- `GET /campaigns/:id/insights/stream` (Server-Sent Events)
+
+### 3. Run the development server
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Visit `http://localhost:3000/campaigns` for the catalogue and click any card for the live-insight view.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Scripts
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+| Command        | Description                              |
+| -------------- | ---------------------------------------- |
+| `npm run dev`  | Start the Next.js dev server             |
+| `npm run build`| Build the production bundle              |
+| `npm start`    | Run the production server (after build)  |
+| `npm run lint` | Lint the project via `next lint` (ESLint)|
 
-## Learn More
+## Development Notes
 
-To learn more about Next.js, take a look at the following resources:
+- Both campaign pages are client components (`"use client"`) because they depend on browser APIs (search input state, EventSource streaming).
+- Live insight updates append onto the last known snapshot, so partial SSE payloads are safe.
+- UI copy references INR currency (₹); update `platformConfig` or formatting helpers if you need localization.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Deployment
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Any platform that supports Node.js 18+ can host this project (Vercel, Netlify, Render, etc.). Be sure to supply `NEXT_PUBLIC_SITE_NAME` in the hosting provider's environment variable settings and allow outbound traffic from the Next.js server to the MIXO Ads API.
